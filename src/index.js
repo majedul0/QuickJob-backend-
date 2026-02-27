@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const { errorHandler } = require('./middleware/errorHandler');
@@ -30,21 +29,10 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/jobs', require('./routes/jobRoutes'));
 app.use('/api/applications', require('./routes/applicationRoutes'));
 
-// --------------- Serve React in Production ---------------
-if (process.env.NODE_ENV === 'production') {
-  const clientBuild = path.join(__dirname, '../../client/dist');
-  app.use(express.static(clientBuild));
-
-  // Any route that's not /api/* → serve React's index.html (SPA fallback)
-  app.get('{*path}', (req, res) => {
-    res.sendFile(path.join(clientBuild, 'index.html'));
-  });
-} else {
-  // Health check (dev only)
-  app.get('/', (req, res) => {
-    res.json({ message: 'QuickJob API is running' });
-  });
-}
+// Health check
+app.get('/', (req, res) => {
+  res.json({ message: 'QuickJob API is running' });
+});
 
 // 404 handler for unknown API routes
 app.all('/api/{*path}', (req, res) => {
