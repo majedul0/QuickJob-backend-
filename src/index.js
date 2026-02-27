@@ -29,7 +29,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(clientBuild));
 
   // Any route that's not /api/* → serve React's index.html (SPA fallback)
-  app.get('*', (req, res) => {
+  app.get('{*path}', (req, res) => {
     res.sendFile(path.join(clientBuild, 'index.html'));
   });
 } else {
@@ -40,7 +40,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // 404 handler for unknown API routes
-app.all('/api/*', (req, res) => {
+app.all('/api/{*path}', (req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' });
 });
 
